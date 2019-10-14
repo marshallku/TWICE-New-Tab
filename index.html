@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8" />
+    <title>TWICE New Tab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./font.css">
+    <link rel="icon" href="./favicon.ico">
+    <link rel="apple-touch-icon-precomposed" href="./favicon.ico">
+    <meta name="msapplication-TileImage" content="./favicon.ico">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="TWICE New Tab">
+    <meta property="og:image" content="./thumbnail.jpg">
+    <meta property="og:title" content="TWICE New Tab">
+    <meta property="og:description" content="Fill your new tab page with TWICE">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@marshall_ku_">
+    <meta name="twitter:title" content="TWICE New Tab">
+    <meta property="twitter:description" content="Fill your new tab page with TWICE">
+    <meta property="twitter:image" content="./thumbnail.jpg">
+    <meta name="by" content="Marshall K">
+    <meta name="robots" content="index,follow">
+    <script src="./check.js"></script>
+</head>
+
+<body>
+    <header id="header">
+        <div class="flex-left">
+            <div class="links-wrapper">
+                <div id="bookmark" class="link-btn icon-bookmark dropdown_btn" data-target="links-list"></div>
+                <div id="links-list" class="dropdown_content darkbg">
+                    <div class="links-inner scrollbarb">
+                        <div class="twice-hyper">
+                            <a href="https://www.youtube.com/channel/UCzgxx_DM2Dcb9Y1spb9mUJA" class="icon-youtube-play" target="_blank"></a>
+                            <a href="https://twitter.com/JYPETWICE" class="icon-twitter" target="_blank"></a>
+                            <a href="https://www.instagram.com/twicetagram/" class="icon-instagram" target="_blank"></a>
+                            <a href="https://www.facebook.com/JYPETWICE/" class="icon-facebook" target="_blank"></a>
+                            <a href="https://channels.vlive.tv/EDBF/home" class="icon-vlive" target="_blank"></a>
+                        </div>
+                        <div id="bookmark-list"></div>
+                        <div><span id="add-new" class="add-cancel"><i class="icon-plus"></i> <span data-en="add">추가하기</span></span></div>
+                        <form id="bookmarkForm">
+                            <input type="text" id="url-name" placeholder="이름" class="url-input" autocomplete="off" data-enpl="Name">
+                        </form>
+                        <form id="bookmarkForm2">
+                            <input type="text" id="url-url" placeholder="주소 *필수" class="url-input" autocomplete="off" data-enpl="Adress *">
+                        </form>
+                        <div class="right"><span id="cancel-add-new" class="add-cancel"><i class="icon-close"></i> <span data-en="cancel">취소</span></span></div>
+                    </div>
+                </div>
+            </div>
+            <div id="search">
+                <form id="searchForm">
+                    <input type="text" id="search-input" class="darkbg m_input" placeholder="검색" data-enpl="Search" autocomplete="off">
+                </form>
+            </div>
+        </div>
+
+        <div class="flex-center"></div>
+
+        <div class="flex-right">
+            <div id="weather" class="dropdown_btn" data-target="detailWeather"></div>
+        </div>
+    </header>
+
+    <section id="main">
+        <div class="main-item"><span id="clock"></span></div>
+        <div id="greetings" class="main-item"><span class="text"></span> <span class="name"></span><span
+                class="punctuation"></span></div>
+    </section>
+
+    <section id="toDo">
+        <form id="toDoForm" class="main-item">
+            <input type="text" id="toDoInput" class="darkbg m_input" placeholder="할 일을 입력해주세요." data-enpl="Add new to do" autocomplete="off">
+        </form>
+        <div id="toDoList" class="main-item scrollbar"></div>
+        <div class="clearallwrapper center"><span class="icon-trash clearAll"></span></div>
+    </section>
+
+    <section id="nameless">
+        <i class="icon-twice twice-logo"></i>
+        <div id="first" data-en="Welcome!">환영합니다!</div>
+        <input type="text" id="name" class="darkbg m_input" placeholder="성함을 입력해주세요." autocomplete="off">
+    </section>
+
+    <footer id="footer">
+        <div class="flex-left">
+            <a id="opensett" class="icon-gear dropdown_btn" data-target="setting"></a>
+        </div>
+        <div class="flex-center">
+            <span id="quotes">
+                <span class="text"></span>
+                <span class="name"></span>
+            </span>
+        </div>
+        <div class="flex-right">
+            <a class="dropdown_btn icon-clock-o" data-target="focus"></a>
+            <a id="openToDo" class="icon-list-ul dropdown_btn" data-target="toDoDone"></a>
+        </div>
+    </footer>
+
+    <div id="toast" class="darkbg"></div>
+    <div id="rusure"></div>
+
+    <div id="focus" class="dropdown_content b_bubble">
+        <div id="circleWrapper">
+            <svg id="focusSVG" width="160" height="160" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="twiceGrad" x1="0%" y1="0%" x2="100%" y2="100%"> <stop offset="0%" style="stop-color:#ff5fa2;stop-opacity:1"/> <stop offset="100%" style="stop-color:#fcc89b;stop-opacity:1"/>
+                    </linearGradient>
+                </defs>
+                <g>
+                    <circle id="focusCircle" class="circle_animation" r="69.85699" cy="81" cx="81" stroke-width="8" stroke="url(#twiceGrad)"
+                        fill="none" />
+                </g>
+            </svg>
+            <div class="buttons">
+                <a id="focusStart" class="icon-play"></a>
+                <a id="focusPause" class="icon-pause"></a>
+                <a id="focusReStart" class="icon-play"></a>
+                <a id="focusStop" class="icon-stop"></a>
+            </div>
+        </div>
+        <form id="focusTimeForm">
+            <input type="Number" id="focusTime" placeholder="집중할 시간(분)" data-enpl="Focus Time(min)" min="1">
+        </form>
+    </div>
+
+    <div id="modify-popup">
+        <div class="title" data-en="Please enter a value to edit.">수정할 내용을 입력해주세요.</div>
+        <form id="modifyForm">
+            <input type="text" id="modify" class="m_input" autocomplete="off">
+        </form>
+        <div class="right"><span class="btn submit" data-en="submit">확인</span><span class="btn" data-en="cancel">취소</span></div>
+    </div>
+
+    <div id="toDoDone" class="dropdown_content b_bubble">
+        <a id="removeDone" class="icon-trash"></a>
+        <div class="done-inner scrollbarb"></div>
+    </div>
+
+    <div id="setting" class="dropdown_content b_bubble">
+        <input id="setting-general" type="radio" name="tabs" checked>
+        <input id="setting-todo" type="radio" name="tabs">
+        <input id="setting-dday" type="radio" name="tabs">
+        <input id="setting-background" type="radio" name="tabs">
+        <input id="setting-location" type="radio" name="tabs">
+        <input id="setting-help" type="radio" name="tabs">
+        <input id="setting-new" type="radio" name="tabs">
+        <input id="setting-about" type="radio" name="tabs">
+        <div class="tab-list">
+            <label for="setting-general" data-en="General">일반</label>
+            <label for="setting-todo" data-en="To do list">할 일 목록</label>
+            <label for="setting-dday" data-en="D-day">D-day 설정</label>
+            <label for="setting-background" data-en="Background">배경</label>
+            <label for="setting-location" data-en="Location">위치</label>
+            <label for="setting-help" data-en="Help">도움말</label>
+            <label for="setting-new" data-en="What's New">새로운 소식</label>
+            <label for="setting-about">About</label>
+        </div>
+        <div class="tab-item setting-general scrollbarb">
+            <p class="label-title" data-en="Show">표시할 요소 선택</p>
+            <label class="switch" data-target="bookmark">
+                <div>
+                    <span class="text" data-en="Bookmark">북마크</span>
+                    <input type="checkbox" id="reveal-bookmark" class="slider-cbx" checked>
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch" data-target="search-input">
+                <div>
+                    <span class="text" data-en="Search">검색</span>
+                    <input type="checkbox" id="reveal-search" class="slider-cbx" checked>
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch" data-target="weather">
+                <div>
+                    <span class="text" data-en="Weather">날씨</span>
+                    <input type="checkbox" id="reveal-weather" class="slider-cbx" checked>
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch" data-target="greetings">
+                <div>
+                    <span class="text" data-en="Greetings">인사말</span>
+                    <input type="checkbox" id="reveal-greetings" class="slider-cbx" checked>
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch" data-target="toDo">
+                <div>
+                    <span class="text" data-en="To do">할 일 목록</span>
+                    <input type="checkbox" id="reveal-tdlist" class="slider-cbx" checked>
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch" data-target="quotes">
+                <div>
+                    <span class="text" data-en="Quotes">인용문</span>
+                    <input type="checkbox" id="reveal-quotes" class="slider-cbx" checked>
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="margin"></div>
+            <p class="label-title" data-en="Clock">시계</p>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="24-clock">24시간 시계</span>
+                    <input type="checkbox" id="clock24" class="slider-cbx">
+                    <span class="slider"></span>
+                </div>
+                <div class="switch-desc" data-en="Clock format : 24 hour">시계를 24시간 단위로 표시합니다.</div>
+            </label>
+            <div class="margin"></div>
+            <p class="label-title" data-en="Change name">이름 변경</p>
+            <div class="item flex">
+                <input type="text"id="rename" class="m_input darkbg" placeholder="이름을 입력해주세요" data-enpl="Put your name here">
+                <div id="renameSubmit" class="btn" data-en="Submit">확인</div>
+            </div>
+            <div class="margin"></div>
+            <p class="label-title" data-en="Search Engine">검색 엔진</p>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Google">구글</span>
+                    <input type="radio" id="google" class="slider-cbx" name="searchEngine" checked>
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="DuckDuckGo">덕덕고</span>
+                    <input type="radio" id="duckduckgo" class="slider-cbx" name="searchEngine">
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Bing">빙</span>
+                    <input type="radio" id="bing" class="slider-cbx" name="searchEngine">
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Naver">네이버</span>
+                    <input type="radio" id="naver" class="slider-cbx" name="searchEngine">
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="margin"></div>
+            <p class="right"><span data-en="Reset" id="reset">초기화</span></p>
+        </div>
+        <div class="tab-item setting-todo scrollbarb">
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Don't display done To-dos">완료한 항목은 표시하지 않기</span>
+                    <input type="checkbox" id="displayDone" class="slider-cbx" checked>
+                    <span class="slider"></span>
+                </div>
+                <div class="switch-desc" data-en="Click the icon on the right bottom to show the list of them">오른쪽 아래 아이콘을 클릭하시면 완료한 항목만 보실 수 있습니다.</div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Remove important when To-do is done">할 일 완료시 중요 표시 해제</span>
+                    <input type="checkbox" id="importantDone" class="slider-cbx" checked>
+                    <span class="slider"></span>
+                </div>
+            </label>
+        </div>
+        <div class="tab-item setting-dday scrollbarb">
+            <p data-en="Show D-day at the top of the screen">D-Day를 화면 최상단에 표시합니다.</p>
+            <form>
+                <input type="date" id="dateInput">
+                <span id="datesubmit" class="btn" data-en="Submit">확인</span>
+                <span id="dateremove" class="btn" data-en="Reset">초기화</span>
+            </form>
+        </div>
+        <div class="tab-item setting-background scrollbarb">
+            <div class="item">
+                <div class="item-text" data-en="Background Opacity">배경 불투명도</div>
+                <div class="item-desc" data-en="0: transparent, 1: opaque">0 : 투명, 1 : 불투명</div>
+                <div class="item-right">
+                    <input type="range" min="0" max="100" id="bgopacity">
+                    <span id="bgo-value">0.5</span>
+                </div>
+            </div>
+            <div class="margin"></div>
+            <p class="label-title" data-en="Slideshow">슬라이드 쇼</p>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Slideshow">슬라이드 쇼</span>
+                    <input type="checkbox" id="carousel" class="slider-cbx">
+                    <span class="slider"></span>
+                    <div class="switch-desc" data-en="Slideshow for background images (reload)">배경 이미지 슬라이드쇼 (새로 고침 필요)</div>
+                </div>
+            </label>
+            <div class="warning" data-en="Can't use this option with Video Background">비디오 배경과 함께 사용하실 수 없습니다.</div>
+            <div class="switch-line"></div>
+            <div class="extra-options">
+                <span class="text" data-en="Number of images">이미지 수</span>
+                <input type="number" autocomplete="off" id="carouselNum" value="3" max="5" min="1" class="s_input">
+            </div>
+            <div class="switch-line"></div>
+            <div class="extra-options">
+                <span class="text" data-en="Slideshow speed (sec.)">슬라이드 쇼 속도 (초)</span>
+                <input type="number" autocomplete="off" id="carouselSpeed" value="5" min="1" class="s_input">
+            </div>
+            <div class="margin"></div>
+            <p class="label-title" data-en="Video Background">비디오 배경</p>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Video Background">비디오 배경</span>
+                    <input type="checkbox" id="mvbg" class="slider-cbx">
+                    <span class="slider"></span>
+                </div>
+                <div class="switch-desc" data-en="Plays random video in background (reload)">배경에 무작위로 비디오를 재생합니다. (새로 고침 필요)</div>
+            </label>
+            <div class="warning" data-en="Might affect the performance of your device">기기의 성능을 저하시킬 수 있습니다.</div>
+            <div class="switch-line"></div>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Pause video when the browser loses focus">브라우저가 활성화되지 않았을 때 영상 일시 정지</span>
+                    <input type="checkbox" id="pauseFocus" class="slider-cbx">
+                    <span class="slider"></span>
+                </div>
+                <div class="switch-desc" data-en="">다른 프로그램을 보고 있을 때 영상을 일시 정지합니다.</div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Pause video when window isn't visible">페이지가 보이지 않을 때 영상 일시 정지</span>
+                    <input type="checkbox" id="pauseVisibility" class="slider-cbx">
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Play randomg video when video is done">비디오가 끝나면 랜덤으로 비디오 재생</span>
+                    <input type="checkbox" id="playRandom" class="slider-cbx">
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="margin"></div>
+            <p class="label-title" data-en="Video list to play">재생할 비디오 목록</p>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Music Video">뮤직비디오</span>
+                    <input type="checkbox" id="bgMV" class="slider-cbx" checked>
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Music programs">음악방송</span>
+                    <input type="checkbox" id="bgB" class="slider-cbx">
+                    <span class="slider"></span>
+                </div>
+                <div class="switch-desc" data-en="Contains fan cam">음방 직캠 영상도 포함</div>
+            </label>
+            <div class="switch-line"></div>
+            <label class="switch">
+                <div>
+                    <span class="text" data-en="Stage Mix">교차편집</span>
+                    <input type="checkbox" id="bgSM" class="slider-cbx">
+                    <span class="slider"></span>
+                </div>
+            </label>
+        </div>
+        <div class="tab-item setting-location scrollbarb">
+            <p class="label-title" data-en="Location Setting">위치 설정</p>
+            <form id="locationForm" class="item flex">
+                <input type="text" id="location" class="m_input darkbg" placeholder="도시를 영어로 입력해주세요" data-enpl="Input your city">
+                <span id="locationSubmit" class="btn" data-en="Submit">확인</span>
+            </form>
+        </div>
+        <div class="tab-item setting-help scrollbarb">
+            <p class="label-title" data-en="Keyboard Events">키보드 이벤트</p>
+            <div><span class="kbd">Esc</span> <span data-en="Close, Cancel">레이어 닫기, 입력 취소</span></div>
+            <div><span class="kbd">A</span> <span data-en="Input to do">할 일 입력</span></div>
+            <div><span class="kbd">S</span> <span data-en="Input search">검색어 입력</span></div>
+            <div><span class="kbd">F</span>&nbsp;,&nbsp;<span class="kbd">F11</span> <span data-en="Toggle Fullscreen">전체화면</span></div>
+            <div><span class="kbd">M</span> <span data-en="Mute toggle (Background Video)">배경 영상 음소거 토글</span></div>
+            <div><span class="kbd">P</span> <span data-en="Play / Pause Background Video">배경 영상 일시 정지 / 재생</span></div>
+            <div><span class="kbd">Space</span> <span data-en="Admire Background">배경만 보기</span></div>
+        </div>
+        <div class="tab-item setting-new scrollbarb">
+            <p class="label-title">1.1 ~</p>
+            <p>시계를 클릭하면 전체 화면으로 전환됩니다.</p>
+            <p data-en="Published TWICE New Tab Page">TWICE New Tab 페이지 업데이트</p>
+            <p><a href="https://marshall-ku.com/twice-new-tab">TWICE New Tab</a></p>
+            <div class="margin"></div>
+            <p class="label-title">1.0.3</p>
+            <p>Feel Special Update</p>
+            <div class="margin"></div>
+            <p class="label-title">1.0.2 ~ 1.0.2.4</p>
+            <p data-en="Updated Focus Timer">포커스 타이머 업데이트</p>
+            <div class="margin"></div>
+            <p class="label-title">1.0.1 ~ 1.0.1.19</p>
+            <p data-en="You can load random video when current video is done.">배경 비디오 재생이 끝나면 랜덤으로 비디오를 다시 불러올 수 있도록 했습니다.</p>
+            <p data-en="Updated option that can automatically pause video.">비디오를 자동으로 일시 정지할 수 있는 옵션을 추가했습니다.</p>
+            <p data-en="Updated 'Done' statement to To-Do Item.">할 일에 "완료" 표시를 추가했습니다.</p>
+            <p data-en="Added button to remove all To-Do Item that is done.">완료한 할 일만 삭제할 수 있도록 했습니다.</p>
+            <p data-en="Added Carousel Slider for background images.">배경 슬라이드쇼가 추가됐습니다.</p>
+            <p data-en="Added Music programs, Stage mix Videos for background video">배경 영상에 음악 방송, 교차편집이 추가됐습니다.</p>
+            <p data-en="You can change your name now.">이름을 변경할 수 있도록 했습니다.</p>
+            <p data-en="You can select search engine now.">검색 엔진을 선택할 수 있도록 했습니다.</p>
+            <p data-en="Added 'Reset'. It removes your name, To-Do list, User settings and everything.">초기화 기능을 추가했습니다. 이름, 할 일 목록 및 각종 사용자 설정이 초기화됩니다.</p>
+            <p data-en="Press 'P' to Play / Pause background video.">P를 누르면 배경 비디오가 재생 / 일시 정지되도록 했습니다.</p>
+            <p data-en="Supports English!!">영어 지원을 시작했습니다.</p>
+            <p data-en="(Fixed) Modifying / deleting To-Do Item will work for only one item.">(버그 수정) 할 일 목록 여러개가 동시에 수정 / 삭제되던 오류를 수정했습니다.</p>
+            <div class="margin"></div>
+            <p class="label-title">1.0 ~ 1.0.0.11</p>
+            <p data-en="Added quotes">인용구를 추가했습니다.</p>
+            <p data-en="Added Keyboard Events">각종 키보드 이벤트를 추가했습니다.</p>
+            <p data-en="Added D-day">D-day를 추가했습니다.</p>
+            <p data-en="Added images for background image.">배경 이미지를 여러개로 늘렸습니다.</p>
+            <p data-en="You can remove everything in To-Do list.">할 일 모두 삭제 버튼을 추가했습니다.</p>
+            <p data-en="Added custom scrollbar to To-Do list.">할 일 목록에 스크롤바를 추가했습니다. 최대 3개까지 표시됩니다.</p>
+            <p data-en="Added settings - You can customize your dashboard now.">설정 추가 - 사용자화가 가능해졌습니다.</p>
+            <p data-en="Added Icons for Weather">날씨 관련 아이콘을 추가했습니다.</p>
+            <p data-en="(Fixed) 12 a.m. won't be displayed like 00 a.m.">(버그 수정) 오전 12시가 00시로 표시되지 않도록 했습니다.</p>
+        </div>
+        <div class="tab-item setting-about scrollbarb center">
+            <i class="icon-twice logo"></i>
+            <h1>Twice New Tab</h1>
+            <p><span data-en="Current Version">현재 버전</span> 1.1.1</p>
+            <p><span data-en="">이 앱이 마음에 드신다면, </span><a href="https://chrome.google.com/webstore/detail/twice-new-tab/jpelibdllbipgjlnpmanoldlcbjbnelo?hl=ko&gl=KR" target="_blank" data-en="Rate this app">스토어에서 평가</a><span data-en=" if you like it!">를 해주시면 감사하겠습니다.</span></p>
+            <p class="c">Made with 💕 by <a href="https://marshall-ku.com" target="_blank">Marshall K</a></p>
+        </div>
+    </div>
+    
+    <script src="https://www.youtube.com/player_api"></script>
+    <script src="./main.js"></script>
+</body>
+
+</html>
