@@ -6,11 +6,14 @@ Chrome Extension : https://chrome.google.com/webstore/detail/twice-new-tab/jpeli
 
 Web App : https://marshall-ku.com/twice-new-tab
 
+***
 
 Simple App to replace new tab page with TWICE, To-do list, Weather, etc...
 
+***
 
 Features
+
 • Background
 
   - TWICE Images
