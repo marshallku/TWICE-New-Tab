@@ -9,13 +9,23 @@ Simple App to replace new tab page with TWICE, To-do list, Weather, etc...
 
 Features
 • Background
+
   - TWICE Images
+  
   - TWICE Videos (M/V, Fan cam, etc...)
+  
   - Slideshow with TWICE Images
+  
 • To do list
+
 • Weather
+
 • Bookmarks
+
 • D-day
+
 • Quotes
+
 • Focus Timer
+
 • Lets you customize your dashboard with settings
