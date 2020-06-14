@@ -100,6 +100,7 @@ input[type=range]::-webkit-slider-thumb {
 
 .icon-twice {
     background: linear-gradient(to right bottom, #ff5fa2, #fcc89b);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
