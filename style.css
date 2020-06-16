@@ -2,12 +2,12 @@
     font-family: 'Godo';
     font-style: normal;
     font-weight: 400;
-    src: url('./resource/fonts/GodoM.woff2') format('woff2')
+    src: url('./src/fonts/GodoM.woff2') format('woff2')
 }
 
 @font-face {
     font-family: 'Handon3gyeopsal600g';
-    src: url('./resource/fonts/Handon3gyeopsal600g.woff') format('woff');
+    src: url('./src/fonts/Handon3gyeopsal600g.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
