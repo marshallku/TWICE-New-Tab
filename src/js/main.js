@@ -1,12 +1,11 @@
-const ko = chrome.i18n.getMessage("language") === "ko",
+const ko = "ko-KR" === navigator.language,
     greetings = document.getElementById("greetings"),
     todoinput = document.getElementById("toDoInput"),
     searchinput = document.getElementById("search-input"),
     todolist = document.getElementById("toDoList"),
     labeltarget = document.querySelectorAll("label[data-target]"),
     bmlist = document.getElementById("bookmark-list"),
-    focus = document.getElementById("focus"),
-    blockList = document.getElementById("blockList");
+    focus = document.getElementById("focus");
     
 let p,
     playerState,
@@ -16,21 +15,77 @@ let p,
     carouseli = 0,
     todoarray = [],
     bookmarkarray = [],
-    blockArray = [],
     time,
-    focusStorage = +localStorage.getItem("focusTime"),
-    focusMs = +localStorage.getItem("focusMs"),
-    focusing;
+    focusing,
+    user = {
+        name: "",
+        location: {
+            latitude: 0,
+            longitude: 0,
+            city: ""
+        },
+        toDo: [],
+        bookmark: [],
+        bgOpacity: 50,
+        dDay: 0,
+        searchEngine: "google",
+        hiddenElem: [],
+        setting: {
+            clock24: 0,
+            mvbg: 0,
+            carousel: 0,
+            carouselNum: 3,
+            carouselSpeed: 5,
+            bgMV: 1,
+            bgB: 0,
+            bgSM: 0,
+            displayDone: 1,
+            importantDone: 1,
+            pauseVisibility: 0,
+            pauseFocus: 0,
+            playRandom: 1
+        },
+        focus: {
+            state: 0,
+            pausedTime: 0,
+            time: 0,
+            ms: 0
+        }
+    };
+
+Array.prototype.remove = function () {
+    var what, a = arguments,
+        L = a.length,
+        ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+};
+
+function init() {
+    const data = localStorage.getItem("TNT-userData");
+
+    data === null || (
+        user = JSON.parse(data)
+    )
+}
+
+function saveData() {
+    localStorage.setItem("TNT-userData", JSON.stringify(user))
+}
 
 function reset() {
-    localStorage.clear(),
-    chrome.storage.sync.remove(["username", "toDo", "dday"])
+    localStorage.removeItem("TNT-userData")
 }
 
 function carousel() {
     let a;
     const b = document.getElementsByClassName("carousel-item"),
-        timing = Number(document.getElementById("carousel-time").value * 1000);
+        timing = Number(document.getElementById("carouselSpeed").value * 1000);
     if (!document.getElementById("mvbg").checked && document.getElementById("carousel").checked) {
         for (a = 0; a < b.length; a++)
         b[a].classList.remove("reveal");
@@ -45,33 +100,33 @@ function loadsetting() {
     setttrue("clock24"),
     setttrue("mvbg"),
     setttrue("carousel"),
-    settval("carousel-num"),
-    settval("carousel-time"),
-    settfalse("bg-mv"),
-    setttrue("bg-b"),
-    setttrue("bg-sm"),
-    settfalse("displaydone"),
-    settfalse("importantdone"),
+    settval("carouselNum"),
+    settval("carouselSpeed"),
+    settfalse("bgMV"),
+    setttrue("bgB"),
+    setttrue("bgSM"),
+    settfalse("displayDone"),
+    settfalse("importantDone"),
     setttrue("pauseVisibility"),
     setttrue("pauseFocus"),
     setttrue("playRandom")
 }
 
 function setttrue(a) {
-    localStorage.getItem(a) === "true" && (document.getElementById(a).checked = 1)
+    1 === user.setting[a] && (document.getElementById(a).checked = 1)
 }
 
 function settval(a) {
-    const b = localStorage.getItem(a);
-    b !== null && (document.getElementById(a).value = b)
+    document.getElementById(a).value = +user.setting[a]
 }
 
 function settfalse(a) {
-    localStorage.getItem(a) === "false" && (document.getElementById(a).checked = 0)
+    0 === user.setting[a] && (document.getElementById(a).checked = 0)
 }
 
 function savesetting(item, boolean) {
-    localStorage.setItem(item, String(boolean))
+    user.setting[item] = +boolean,
+    saveData(),
 
     toast(`${ko
         ? "변경사항이 저장되었습니다."
@@ -80,7 +135,8 @@ function savesetting(item, boolean) {
 }
 
 function saveradio(id, name) {
-    localStorage.setItem(name, String(id))
+    user[name] = id,
+    saveData(),
 
     toast(`${ko
         ? "변경사항이 저장되었습니다."
@@ -89,16 +145,13 @@ function saveradio(id, name) {
 }
 
 function loadradio() {
-    const se = localStorage.getItem("searchEngine");
-    se !== null && (
-        document.getElementById(se).checked = 1
-    )
+    document.getElementById(user.searchEngine).checked = 1
 }
 
 function initelem() {
     Array.from(labeltarget).forEach(a => {
         const target = a.getAttribute("data-target");
-        if (localStorage.getItem(`reveal-${target}`) === "false") {
+        if (-1 !== user.hiddenElem.indexOf(target)) {
             document.getElementById(target).classList.add("instant-hide"),
             a.querySelector("input").checked = 0
         }
@@ -111,21 +164,23 @@ function hideelem(t) {
     if (!elem.classList.contains("hiding") && !trigger.checked && !elem.classList.contains("instant-hide")) {
         elem.style.opacity = "0",
         elem.classList.add("hiding"),
-        localStorage.setItem(`reveal-${t}`, "false")
+        user.hiddenElem.push(t),
+        saveData()
     }
     else {
         elem.removeAttribute("style"),
         elem.classList.remove("hiding", "instant-hide"),
-        localStorage.removeItem(`reveal-${t}`)
+        user.hiddenElem.remove(t),
+        saveData()
     }
 }
 
 function randombg() {
-    const bgarray = ["CDNoBuI", "yQB78pP", "pb9HDW0", "EBHFvt0", "5UvsvlI", "YB4ft4S", "ucHTu5A", "RJKA8cA", "7It9gpI", "yRKJmbD", "FZh41Ox", "MsFrNXc", "OFMw9OT", "0NMgc4S", "SQL6zxU", "8m2qwTw", "GSgHNYR", "q7wmxfH", "iPFRBZN", "ZmmYlBn", "PSNiw7U", "P7EEhcz", "8N5TwtW", "JZfuclW", "iCTdv1D", "Yi1NJH2", "wMQZeTv"],
+    const bgarray=700<=window.innerWidth?["CDNoBuI", "yQB78pP", "pb9HDW0", "EBHFvt0", "5UvsvlI", "YB4ft4S", "ucHTu5A", "RJKA8cA", "7It9gpI", "yRKJmbD", "FZh41Ox", "MsFrNXc", "OFMw9OT", "0NMgc4S", "SQL6zxU", "8m2qwTw", "GSgHNYR", "q7wmxfH", "iPFRBZN", "ZmmYlBn", "PSNiw7U", "P7EEhcz", "8N5TwtW", "JZfuclW", "iCTdv1D", "Yi1NJH2", "wMQZeTv"]:["PPLTeMk","xS3MHeE","XQMtLXx","ZuFeZOk","aR0c3AZ","EiBsqa5","xovtmVG","7TTzmPj"],
         random = bgarray[Math.round(Math.random() * (bgarray.length - 1))],
         mvcheck = document.getElementById("mvbg").checked,
         carcheck = document.getElementById("carousel").checked,
-        count = Number(document.getElementById("carousel-num").value),
+        count = Number(document.getElementById("carouselNum").value),
         wrapper = document.createElement("div"),
         vidwrapper = document.createElement("div");
     let bg, arrandom, x;
@@ -178,22 +233,23 @@ function bgopacity() {
     const value = document.getElementById("bgopacity").value / 100,
         bg = document.getElementById("bg");
 
-    localStorage.getItem("bgopacity") === null
-    ? (bg.style.opacity = value)
-    : (bg.style.opacity = value, document.getElementById("bgo-value").innerText = value)
+    bg.style.opacity = value,
+    document.getElementById("bgo-value").innerText = value
 }
 
 function loadbgopacity() {
     const bgopacity = document.getElementById("bgopacity"),
-        bg = document.getElementById("bg");
+        bg = document.getElementById("bg"),
+        value = +user.bgOpacity;
 
-    localStorage.getItem("bgopacity") === null
-    ? (bg.style.opacity = bgopacity.value / 100)
-    : (bg.style.opacity = Number(localStorage.getItem("bgopacity")) / 100, bgopacity.value = Number(localStorage.getItem("bgopacity")), document.getElementById("bgo-value").innerText = bgopacity.value / 100)
+        bg.style.opacity = value / 100,
+        bgopacity.value = value,
+        document.getElementById("bgo-value").innerText = value / 100
 }
 
 function savebgopacity() {
-    localStorage.setItem("bgopacity", document.getElementById("bgopacity").value),
+    user.bgOpacity = document.getElementById("bgopacity").value,
+    saveData(),
     toast(`${ko
         ? "변경사항이 저장되었습니다."
         : "Saved"
@@ -201,48 +257,47 @@ function savebgopacity() {
 }
 
 function getname() {
-    chrome.storage.sync.get(["username"], function (result) {
-        const a = result.username,
-            nameless = document.getElementById("nameless");
-        undefined === a
-        ? (document.body.classList.add("nameplz"),
-            document.getElementById("name").addEventListener("keypress", function (b) {
-                "Enter" === b.key && setname(), getname()
-            })
-        )
-        : (greetings.querySelector(".name").innerText =
-        `${
-            ko
-            ? `${a} 님`
-            : a
-        }`, nameless !== null && nameless.remove())
-    });
+    const name = user.name,
+        nameless = document.getElementById("nameless");
+
+    "" === name
+    ? (document.body.classList.add("nameplz"),
+        document.getElementById("name").addEventListener("keypress", function (b) {
+            "Enter" === b.key && setname(), getname()
+        })
+    )
+    : (
+        greetings.querySelector(".name").innerText = `${ko ? `${name} 님` : name}`,
+        nameless !== null && nameless.remove()
+    )
 }
 
 function setname() {
     const value = document.getElementById("name").value;
 
-    "" !== value && (chrome.storage.sync.set({
-        username: value
-    }, function () {
+    "" !== value && (
+        user.name = value,
+        saveData(),
         toast(`${ko
             ? `${value}로 이름이 저장되었습니다.`
             : `Name has saved to ${value}`
-        }`)
-    }), document.body.classList.remove("nameplz"))
+        }`),
+        document.body.classList.remove("nameplz")
+    )
 }
 
 function rename() {
     const value = document.getElementById("rename").value;
 
-    "" !== value && (chrome.storage.sync.set({
-        username: value
-    }, function () {
+    "" !== value && (
+        user.name = value,
+        saveData(),
         toast(`${ko
             ? `${value}로 이름이 저장되었습니다.`
             : `Name has saved to ${value}`
-        }`)
-    }))
+        }`),
+        document.body.classList.remove("nameplz")
+    )
 }
 
 function clock() {
@@ -415,10 +470,10 @@ function deletedonetodo() {
 }
 
 function displaydone() {
-    document.getElementById("displaydone").checked === true
+    document.getElementById("displayDone").checked === true
     ? document.body.classList.add("hidedone")
     : document.body.classList.remove("hidedone"),
-    document.getElementById("importantdone").checked === true
+    document.getElementById("importantDone").checked === true
     ? document.body.classList.add("importantdone")
     : document.body.classList.remove("importantdone")
 }
@@ -526,17 +581,16 @@ function search(e) {
 }
 
 function savetodo() {
-    chrome.storage.sync.set({"toDo": JSON.stringify(todoarray)});
+    user.toDo = todoarray,
+    saveData()
 }
 
 function loadtodo() {
-    chrome.storage.sync.get(["toDo"], function(result) {
-        const todo = result.toDo;
-        let parse;
-        undefined !== todo && (parse = JSON.parse(todo), parse.forEach(function (b) {
+    user.toDo.length !== 0 && (
+        user.toDo.forEach(b => {
             addtodo(b.text, b.important, b.done)
-        }));
-    })
+        })
+    )
 }
 
 function cleartodo() {
@@ -546,15 +600,47 @@ function cleartodo() {
     savetodo()
 }
 
-function getweather(position) {    
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=efe04316ea5b327e995a9b5e40d9ab34&units=metric`).then(function(a) {
+function checkGeo() {
+    if (0 === user.location.latitude && "" === user.location.city) {
+        navigator.geolocation.getCurrentPosition(getGeolocation, geoError)
+    }
+    else {
+        getWeather(`${"" !== user.location.city ? "city" : "coord"}`)
+    }
+}
+
+function getGeolocation(position) {
+    user.location.latitude = position.coords.latitude,
+    user.location.longitude = position.coords.longitude,
+    console.log(position),
+    saveData(),
+    getWeather("coord")
+}
+
+function geoError() {
+    user.location.city = "seoul",
+    saveData(),
+    getWeather("city")
+}
+
+function handleLocation(e) {
+    e.preventDefault(),
+    user.location.city = document.getElementById("location").value,
+    saveData(),
+    getWeather("city")
+}
+
+function getWeather(method) {
+    document.getElementById("weather").innerHTML = "",
+    fetch(`${"coord" === method ?`https://api.openweathermap.org/data/2.5/weather?lat=${user.location.latitude}&lon=${user.location.longitude}&appid=efe04316ea5b327e995a9b5e40d9ab34&units=metric`:`https://api.openweathermap.org/data/2.5/weather?q=${user.location.city}&appid=efe04316ea5b327e995a9b5e40d9ab34&units=metric`}`).then((a) => {
         return a.json()
-    }).then(function(a) {
+    }).then((a) => {
         const weather = a.weather[0],
             ico = document.createElement("span"),
             wrapper = document.createElement("span"),
             text = document.createElement("span"),
-            text2 = document.createElement("span");
+            text2 = document.createElement("span"),
+            detail = document.createElement("div");
 
         ico.className = weatherico(weather.icon),
         ico.setAttribute("title", weather.description),
@@ -562,7 +648,11 @@ function getweather(position) {
         text2.innerText = a.name,
         wrapper.className = "txt-wrapper",
         wrapper.append(text, text2),
-        document.getElementById("weather").append(ico, wrapper);
+        document.getElementById("weather").append(ico, wrapper),
+        detail.id = "detailWeather",
+        detail.classList.add("dropdown_content"),
+        detail.append(ico.cloneNode()),
+        document.body.append(detail);
     })
 }
 
@@ -632,44 +722,39 @@ function savedday() {
         ? "날짜를 입력해주세요."
         : "It's not a valid date."
     }`)
-    : (chrome.storage.sync.set({"dday": dday}, function() {
-        toast(`${ko
-            ? "저장됐습니다."
-            : "Saved"
-        }`)
-    }), loaddday())
+    : (
+        user.dDay = dday,
+        saveData(),
+        toast(`${ko ? "저장됐습니다" : "Saved"}`),
+        loaddday()
+    )
 }
 
 function removedday() {
-    chrome.storage.sync.set({"dday": ""}, function() {
-        toast(`${ko
-            ? "삭제했습니다."
-            : "Removed"
-        }`)
-    }),
+    user.dDay = 0,
+    saveData(),
+    toast(`${ko ? "삭제했습니다." : "Removed"}`),
     document.getElementById("header").querySelector(".flex-center").innerHTML = ""
 }
 
 function loaddday() {
+    const header = document.getElementById("header").querySelector(".flex-center"),
+        dday = user.dDay,
+        datetext = document.createElement("div");
+            
+    let loaded, today, dist, fixed;
     document.getElementById("header").querySelector(".flex-center").innerHTML = "",
-    chrome.storage.sync.get(["dday"], function (result) {
-        const header = document.getElementById("header").querySelector(".flex-center"),
-            dday = result.dday,
-            datetext = document.createElement("div");
-
-        let loaded, today, dist, fixed;
-        undefined !== dday && "" !== dday &&
-        (
-            loaded = new Date(dday).getTime(),
-            today = new Date().getTime(),
-            dist = loaded - today,
-            fixed = Math.floor(dist / 864e5),
-            datetext.className = "d-day",
-            datetext.innerText = 0 <= fixed ? 0 < fixed ? `D - ${fixed}` : "D- Day" : `D + ${-fixed}`,
-            datetext.setAttribute("title", dday),
-            header.append(datetext)
-        );
-    });
+    0 !== dday && "" !== dday &&
+    (
+        loaded = new Date(dday).getTime(),
+        today = new Date().getTime(),
+        dist = loaded - today,
+        fixed = Math.floor(dist / 864e5),
+        datetext.className = "d-day",
+        datetext.innerText = 0 <= fixed ? 0 < fixed ? `D - ${fixed}` : "D- Day" : `D + ${-fixed}`,
+        datetext.setAttribute("title", dday),
+        header.append(datetext)
+    );
 }
 
 function dropdown(t) {
@@ -773,11 +858,10 @@ function addbookmark(name, url) {
 }
 
 function loadbookmark() {
-    const bookmark = localStorage.getItem("bookmark");
-    let parse;
+    const bookmark = user.bookmark;
 
-    null !== bookmark &&
-    (parse = JSON.parse(bookmark), parse.forEach(function (a) {
+    0 !== bookmark.length &&
+    (bookmark.forEach((a) => {
         addbookmark(a.name, a.url)
     }));
 }
@@ -815,7 +899,8 @@ function deletebookmark(e) {
 }
 
 function savebookmark() {
-    localStorage.setItem("bookmark", JSON.stringify(bookmarkarray))
+    user.bookmark = bookmarkarray,
+    saveData()
 }
 
 function youtubeVideo() {
@@ -824,9 +909,9 @@ function youtubeVideo() {
         barray = ["nY7Kyl9XnNM", "D_0qYiQN9ck", "6J-2s2h45v8"],
         smarray = ["2BlwXXVCAFM", "akV2TlH38oY", "qY22HPfafSQ", "3L0M9qLhLzs", "u2bFGPsxep4", "OkGay7vlWIY"];
 
-    !0 === document.getElementById("bg-mv").checked && main.pushArray(mvarray),
-    !0 === document.getElementById("bg-b").checked && main.pushArray(barray),
-    !0 === document.getElementById("bg-sm").checked && main.pushArray(smarray)
+    !0 === document.getElementById("bgMV").checked && main.pushArray(mvarray),
+    !0 === document.getElementById("bgB").checked && main.pushArray(barray),
+    !0 === document.getElementById("bgSM").checked && main.pushArray(smarray)
     
     return main[Math.round(Math.random() * (main.length - 1))];
 }
@@ -894,30 +979,27 @@ function handleVisibilityChange() {
 
 
 function toggleFullScreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-    }
-    else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        }
-    }
+    const a = window.document,
+        b = a.documentElement,
+        c = b.requestFullscreen || b.mozRequestFullScreen || b.webkitRequestFullScreen || b.msRequestFullscreen,
+        d = a.exitFullscreen || a.mozCancelFullScreen || a.webkitExitFullscreen || a.msExitFullscreen;
+    a.fullscreenElement || a.mozFullScreenElement || a.webkitFullscreenElement || a.msFullscreenElement ? d.call(a) : c.call(b)
 }
 
 function initFocus() {
-    if (focusStorage - new Date().getTime() >= 0 && localStorage.getItem("focusing") === "true" && localStorage.getItem("focusPaused") !== "true") {
+    if (user.focus.time - new Date().getTime() >= 0 && 1 === user.focus.state) {
         focus.classList.add("focusing", "reveal"),
         focusTimer(),
         focusInterval()
     }
-    if (localStorage.getItem("focusPaused") === "true") {
+    if (2 === user.focus.state) {
         focus.classList.add("paused", "reveal"),
-        document.getElementById("focusCircle").style.strokeDashoffset = ((focusMs - (focusStorage - +localStorage.getItem("focusPausedTime"))) / focusMs) * 440
+        document.getElementById("focusCircle").style.strokeDashoffset = ((user.focus.ms - (user.focus.time - user.focus.pausedTime)) / user.focus.ms) * 440
     }
 }
 
 function focusTimer() {
-    const target = focusStorage - new Date().getTime(),
+    const target = user.focus.time - new Date().getTime(),
         svg = document.getElementById("focusCircle"),
         opt = {
             type: "basic",
@@ -927,14 +1009,15 @@ function focusTimer() {
         };
 
     if (target >= 0) {
-        svg.style.strokeDashoffset = ((focusMs - target) / focusMs) * 440
+        svg.style.strokeDashoffset = ((user.focus.ms - target) / user.focus.ms) * 440
     }
     else {
         clearInterval(focusing),
-        localStorage.setItem("focusing", "false"),
+        user.focus.state = 0,
+        saveData(),
         focus.classList.remove("focusing"),
-        svg.style.strokeDashoffset = 0,
-        chrome.notifications.create("focusNoti", opt)
+        svg.style.strokeDashoffset = 0
+        // chrome.notifications.create("focusNoti", opt)
     }
 }
 
@@ -950,14 +1033,15 @@ function focusSubmit(e) {
     const tmp = new Date().getTime() + time * 60000;
 
     if (time >= 0) {
-        localStorage.setItem("focusing", "true"),
-        localStorage.setItem("focusTime", tmp),
-        localStorage.setItem("focusMs", time * 60000),
-        focusStorage = tmp,
-        focusMs = time * 60000,
+        user.focus.state = 1,
+        user.focus.time = tmp,
+        user.focus.ms = time * 60000,
+        saveData(),
+        user.focus.time = tmp,
+        user.focus.ms = time * 60000,
         focus.classList.add("focusing"),
-        focusInterval(),
-        chrome.notifications.clear("focusNoti")
+        focusInterval()
+        // chrome.notifications.clear("focusNoti")
     }
     else {
         toast(`${ko ? "1 이상의 수를 입력해주세요" : "Numerber should be bigger than 0"}`)
@@ -966,18 +1050,17 @@ function focusSubmit(e) {
 
 function focusPause() {
     clearInterval(focusing),
-    localStorage.setItem("focusPaused", "true"),
-    localStorage.setItem("focusing", "false"),
-    localStorage.setItem("focusPausedTime", new Date().getTime()),
+    user.focus.state = 2,
+    user.focus.pausedTime = new Date().getTime(),
+    saveData(),
     focus.classList.remove("focusing"),
     focus.classList.add("paused");
 }
 
 function focusReStart() {
-    const newTime = +localStorage.getItem("focusTime") + (new Date().getTime() - +localStorage.getItem("focusPausedTime"));
-    localStorage.setItem("focusPaused", "false"),
-    localStorage.setItem("focusTime", newTime),
-    focusStorage = newTime,
+    user.focus.state = 1,
+    user.focus.time = user.focus.time + new Date().getTime() - user.focus.pausedTime,
+    saveData(),
     focus.classList.remove("paused"),
     focus.classList.add("focusing"),
     focusInterval()
@@ -985,83 +1068,22 @@ function focusReStart() {
 
 function focusStop() {
     clearInterval(focusing),
-    localStorage.setItem("focusing", "false"),
-    localStorage.removeItem("focusPaused", "focusPausedTime"),
+    user.focus.state = 0,
+    user.focus.pausedTime = 0,
+    saveData(),
     focus.classList.remove("focusing", "paused"),
     document.getElementById("focusCircle").style.strokeDashoffset = 0
 }
 
-function addBlockUrl(url) {
-    const id = urlnumber,
-        wrapper = document.createElement("div"),
-        inner = document.createElement("div"),
-        del = document.createElement("span"),
-        item = {
-            url: url,
-            id : id
-        };
-
-    del.className = "icon-close",
-    del.addEventListener("click", deleteBlock),
-    inner.innerText = url,
-    wrapper.setAttribute("data-id", id),
-    wrapper.append(inner, del),
-    blockList.append(wrapper),
-    document.getElementById("blockUrl").value = "",
-    blockArray.push(item),
-    saveBlock(),
-    urlnumber++
-}
-
-function focusBlockSubmit(e) {
-    const url = document.getElementById("blockUrl").value;
-
-    e.preventDefault()
-
-    if (url !== "") {
-        addBlockUrl(url)
-    }
-}
-
-function loadBlock() {
-    const block = localStorage.getItem("blockArray");
-    let parse;
-
-    null !== block
-    ? (parse = JSON.parse(block))
-    : (parse = [{url: "youtube.com"}, {url: "facebook.com"}, {url: "instagram.com"}]),
-
-    parse.forEach(function (a) {
-        addBlockUrl(a.url)
-    })
-}
-
-function deleteBlock(e) {
-    const target = e.target.parentNode,
-        filter = blockArray.filter(function(a) {
-            return a.id !== Number(target.getAttribute("data-id"))
-        });
-
-    blockArray = filter,
-    saveBlock(),
-    setTimeout(function() {
-        blockList.removeChild(target)
-    }, 10)
-}
-
-function saveBlock() {
-    localStorage.setItem("blockArray", JSON.stringify(blockArray))
-}
-
-navigator.geolocation.getCurrentPosition(getweather),
-initelem(),loadsetting(),loadradio(),randombg(),clock(),getname(),setgreetings(),loadtodo(),loaddday(),randomquotes(),loadbookmark(),displaydone(),initFocus(),loadBlock(),
+init(),
+checkGeo(),
+initelem(),loadsetting(),loadradio(),randombg(),clock(),getname(),setgreetings(),loadtodo(),loaddday(),randomquotes(),loadbookmark(),displaydone(),initFocus(),
 document.addEventListener("visibilitychange", handleVisibilityChange, !1),
 document.getElementById("toDoForm").addEventListener("submit", todosubmit),
 document.getElementById("searchForm").addEventListener("submit", search),
 document.getElementById("bookmarkForm").addEventListener("submit", bookmarksubmit),
 document.getElementById("bookmarkForm2").addEventListener("submit", bookmarksubmit),
 document.getElementById("focusTimeForm").addEventListener("submit", focusSubmit),
-document.getElementById("blockForm").addEventListener("submit", focusBlockSubmit),
 setInterval(function() {
     clock()
 }, 500),
@@ -1080,7 +1102,7 @@ Array.from(document.querySelectorAll(".switch")).forEach(a => {
     const b = a.querySelector("input"),
         c = b.getAttribute("type");
     c === "checkbox" && a.addEventListener("click", function() {
-        savesetting(b.id, b.checked)
+        savesetting(b.id, `${b.checked ? 1 : 0}`)
     }),
     c === "radio" && a.addEventListener("click", function() {
         saveradio(b.id, b.name)
@@ -1136,6 +1158,9 @@ document.getElementById("focusStart").addEventListener("click", focusSubmit),
 document.getElementById("focusPause").addEventListener("click", focusPause),
 document.getElementById("focusStop").addEventListener("click", focusStop),
 document.getElementById("focusReStart").addEventListener("click", focusReStart),
+document.getElementById("locationForm").addEventListener("submit", handleLocation),
+document.getElementById("locationSubmit").addEventListener("click", handleLocation),
+document.getElementById("main").addEventListener("click", toggleFullScreen),
 window.onclick = function(e) {
     const target = e.target;
     donecheck(),
@@ -1178,5 +1203,4 @@ document.addEventListener("keyup", function(e) {
         "KeyS" === k && searchinput.focus()
     )
 }),
-
 document.body.classList.add("reveal");
