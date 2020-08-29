@@ -401,7 +401,7 @@ function addtodo(text, important, done) {
     input.addEventListener("click", donetodo),
     ell.addEventListener("click", function() {
         const parent = this.parentNode;
-        Array.from(document.querySelectorAll(".todo-item.option")).forEach(a => {
+        document.querySelectorAll(".todo-item.option").forEach(a => {
             a !== parent && a.classList.remove("option");
         }),
         parent.classList.toggle("option")
@@ -441,7 +441,7 @@ function deletetodo(e) {
         filter = todoarray.filter(function(a) {
             return a.id !== Number(target)
         });
-    Array.from(document.querySelectorAll(`[data-id="${target}"]`)).forEach(a => {
+    document.querySelectorAll(`[data-id="${target}"]`).forEach(a => {
         a.remove()
     }),
     todoarray = filter,
@@ -457,7 +457,7 @@ function deletedonetodo() {
     const filter = todoarray.filter(function(a) {
         return a.done === "false"
     });
-    Array.from(document.querySelectorAll("[data-done='true']")).forEach(a => {
+    document.querySelectorAll("[data-done='true']").forEach(a => {
         a.remove()
     }),
     todoarray = filter,
@@ -492,10 +492,10 @@ function donetodo(a) {
         btn = document.getElementById("openToDo");
 
         "true" === target.getAttribute("data-done")
-        ? (target.classList.contains("todo-item") && btn.classList.remove("vibrate"), todoarray.find(x => x.id === +num).done = "false", Array.from(document.querySelectorAll(`[data-id="${num}"]`)).forEach(a => {
+        ? (target.classList.contains("todo-item") && btn.classList.remove("vibrate"), todoarray.find(x => x.id === +num).done = "false", document.querySelectorAll(`[data-id="${num}"]`).forEach(a => {
             a.setAttribute("data-done", "false")
         }))
-        : (target.classList.contains("todo-item") && btn.classList.add("vibrate"), todoarray.find(x => x.id === +num).done = "true", Array.from(document.querySelectorAll(`[data-id="${num}"]`)).forEach(a => {
+        : (target.classList.contains("todo-item") && btn.classList.add("vibrate"), todoarray.find(x => x.id === +num).done = "true", document.querySelectorAll(`[data-id="${num}"]`).forEach(a => {
             a.setAttribute("data-done", "true")
         })),
         checktodo(),
@@ -528,7 +528,7 @@ function modifytodo(e) {
             e.preventDefault(),
             "" !== input.value && (
                 todoarray.find(x => x.id === +num).text = input.value,
-                Array.from(document.querySelectorAll(`[data-id="${num}"]`)).forEach(a => {
+                document.querySelectorAll(`[data-id="${num}"]`).forEach(a => {
                     a.querySelector(".todo-text").innerText = input.value
                 }),
                 input.value = "",
@@ -760,7 +760,7 @@ function loaddday() {
 function dropdown(t) {
     const target = document.getElementById(t);
 
-    Array.from(document.querySelectorAll(".dropdown_content.reveal")).forEach(a => {
+    document.querySelectorAll(".dropdown_content.reveal").forEach(a => {
         a !== target && a.classList.remove("reveal");
     }),
     target.classList.toggle("reveal")
@@ -1093,12 +1093,12 @@ document.getElementById("opensett").addEventListener("click", function() {
 Array.prototype.pushArray = function(arr) {
     this.push.apply(this, arr);
 },
-Array.from(document.querySelectorAll(".dropdown_btn")).forEach(a => {
+document.querySelectorAll(".dropdown_btn").forEach(a => {
     a.addEventListener("click", function() {
         dropdown(this.getAttribute("data-target"))
     })
 }),
-Array.from(document.querySelectorAll(".switch")).forEach(a => {
+document.querySelectorAll(".switch").forEach(a => {
     const b = a.querySelector("input"),
         c = b.getAttribute("type");
     c === "checkbox" && a.addEventListener("click", function() {
@@ -1108,28 +1108,28 @@ Array.from(document.querySelectorAll(".switch")).forEach(a => {
         saveradio(b.id, b.name)
     })
 }),
-Array.from(document.querySelectorAll(".s_input")).forEach(a => {
+document.querySelectorAll(".s_input").forEach(a => {
     a.addEventListener("input", function() {
         savesetting(a.id, a.value)
     })
 }),
 ko 
 ? (
-    Array.from(document.querySelectorAll("[data-en]")).forEach(a => {
+    document.querySelectorAll("[data-en]").forEach(a => {
         a.removeAttribute("data-en")
     }),
-    Array.from(document.querySelectorAll("[data-enpl]")).forEach(a => {
+    document.querySelectorAll("[data-enpl]").forEach(a => {
         a.removeAttribute("data-enpl")
     })
 )
 : (
     document.title = "New tab",
     document.documentElement.setAttribute("lang", "en"),
-    Array.from(document.querySelectorAll("[data-en]")).forEach(a => {
+    document.querySelectorAll("[data-en]").forEach(a => {
         a.innerText = a.getAttribute("data-en"),
         a.removeAttribute("data-en")
     }),
-    Array.from(document.querySelectorAll("[data-enpl]")).forEach(a => {
+    document.querySelectorAll("[data-enpl]").forEach(a => {
         a.setAttribute("placeholder", a.getAttribute("data-enpl")),
         a.removeAttribute("data-enpl")
     })
@@ -1165,10 +1165,10 @@ window.onclick = function(e) {
     const target = e.target;
     donecheck(),
     target.matches("#modify-popup, #modify-popup *, .icon-pencil") || document.getElementById("modify-popup").classList.remove("reveal"),
-    target.matches(".todo-item.option, .todo-item.option *") || Array.from(document.querySelectorAll(".todo-item.option")).forEach(a => {
+    target.matches(".todo-item.option, .todo-item.option *") || document.querySelectorAll(".todo-item.option").forEach(a => {
         a.classList.remove("option")
     }),
-    target.matches(".dropdown_btn, .dropdown_btn *, .dropdown_content, .dropdown_content *") || Array.from(document.querySelectorAll(".dropdown_content")).forEach(a => {
+    target.matches(".dropdown_btn, .dropdown_btn *, .dropdown_content, .dropdown_content *") || document.querySelectorAll(".dropdown_content").forEach(a => {
         a.classList.remove("reveal")
     }),
     target.matches("#opensett, #setting, #setting *") || document.getElementById("opensett").classList.remove("actv"),
@@ -1188,11 +1188,11 @@ document.addEventListener("keydown", function(e) {
         "KeyF" === k && toggleFullScreen(),
         "KeyP" === k && toggleplay()
     ),
-    "Escape" === k && (Array.from(document.querySelectorAll(".reveal")).forEach(a => {
+    "Escape" === k && (document.querySelectorAll(".reveal").forEach(a => {
         a !== document.querySelector(".clearallwrapper") && a !== document.body && a.classList.remove("reveal")
-    }), Array.from(document.querySelectorAll(".todo-item")).forEach(a => {
+    }), document.querySelectorAll(".todo-item").forEach(a => {
         a.classList.remove("option")
-    }), Array.from(document.querySelectorAll("input")).forEach(a => {
+    }), document.querySelectorAll("input").forEach(a => {
         a.blur()
     }), document.getElementById("opensett").classList.remove("actv"))
 }),
